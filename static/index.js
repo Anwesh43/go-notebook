@@ -10,3 +10,30 @@ textBox.onkeydown = (e) => {
         socket.emit('newWords', value)
     }
 }
+
+class CodeInput {
+
+    constructor() {
+        this.initInput()
+    }
+
+    initInput() {
+        this.input = document.createElement('textarea')
+        this.input.cols = 200
+        this.input.rows = 10
+        document.body.appendChild(this.input)
+        this.rows = 0
+    }
+
+    handleInput() {
+        this.input.onblur = () => {
+            console.log(this.input.value)
+        }
+
+        this.input.onkeydown = (event) => {
+            if (event.keyCode == 13) {
+                this.input.rows = parseInt(this.input.rows) + 1
+            }
+        }
+    }
+}
