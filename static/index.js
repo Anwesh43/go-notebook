@@ -22,7 +22,9 @@ class CodeInput {
         this.input.cols = 200
         this.input.rows = 10
         document.body.appendChild(this.input)
-        this.rows = 0
+        this.executeButton = document.createElement('button')
+        this.button.innerHTML = "EXECUTE"
+        document.body.appendChild(this.executeButton)
     }
 
     handleInput() {
@@ -35,5 +37,18 @@ class CodeInput {
                 this.input.rows = parseInt(this.input.rows) + 1
             }
         }
+    }
+
+    handleClick() {
+        this.executeButton.onclick = () => {
+            alert('Started executing current code')
+        }
+    }
+
+    static create() {
+        const codeInput = new CodeInput()
+        codeInput.handleInput()
+        codeInput.handleClick()
+        return codeInput
     }
 }
