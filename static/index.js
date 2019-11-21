@@ -6,6 +6,7 @@ class CodeInput {
     }
 
     initInput() {
+        this.ci = `code_input_${new Date().getTime()}`
         this.input = document.createElement('textarea')
         this.input.cols = 150
         this.input.rows = 2
@@ -17,12 +18,22 @@ class CodeInput {
         this.executeButton.className = 'execbtn'
         this.executeButton.style.float = 'top'
         document.body.appendChild(this.executeButton)
+        this.text = document.createElement('div')
+        this.text.style.display = "none"
+        this.text.className = "output"
+        document.body.appendChild(this.text)
     }
 
     handleInput() {
         this.input.onblur = () => {
-            console.log(this.input.value)
+            this.removeResult()
         }
+
+        this.input.onfocus = () => {
+            this.removeResult()
+        }
+
+
 
         this.input.onkeydown = (event) => {
             if (event.keyCode == 13) {
@@ -37,9 +48,26 @@ class CodeInput {
         }
     }
 
+    showResult(text) {
+        this.text.style.display = 'block'
+        this.text.innerHTML = text
+        this.textShown = true
+    }
+
+    removeResult() {
+        if (this.textShown) {
+            this.text.style.display = 'none'
+            this.textShown = false
+        }
+    }
+
     handleClick() {
         this.executeButton.onclick = () => {
-            alert('Started executing current code')
+            socket.emit('execute', {
+                ci : this.ci,
+                content : this.input.value,
+                lang : 'GO_LANG_COMMAND'
+            })
         }
     }
 
@@ -78,4 +106,18 @@ class AddButton {
     }
 }
 
-AddButton.create()
+const init = () => {
+    const addBtn = AddButton.create()
+    socket.on('result', (data) => {
+        const {ci, status} = data
+        addBtn.codeInputs.filter((codeInput) => codeInput.ci == ci).forEach((codeInput) => {
+            if (status == "success") {
+                codeInput.showResult(data.output)
+            } else {
+                codeInput.showResult(JSON.stringify(data.err))
+            }
+        })
+    })
+}
+
+init()
