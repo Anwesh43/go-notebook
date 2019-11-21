@@ -1,16 +1,4 @@
-const byId = (id) => {
-    return document.getElementById(id)
-}
 const socket = io.connect('http://localhost:8000/ns1')
-const textBox = byId('t1')
-textBox.onkeydown = (e) => {
-    const value = textBox.value
-    if (value.length % 10 == 0 && value.length != 0) {
-        console.log(value)
-        socket.emit('newWords', value)
-    }
-}
-
 class CodeInput {
 
     constructor() {
@@ -19,11 +7,15 @@ class CodeInput {
 
     initInput() {
         this.input = document.createElement('textarea')
-        this.input.cols = 200
-        this.input.rows = 10
+        this.input.cols = 150
+        this.input.rows = 2
+        this.input.className = 'tarea'
+        this.input.style.float = 'top'
         document.body.appendChild(this.input)
         this.executeButton = document.createElement('button')
-        this.button.innerHTML = "EXECUTE"
+        this.executeButton.innerHTML = "EXECUTE"
+        this.executeButton.className = 'execbtn'
+        this.executeButton.style.float = 'top'
         document.body.appendChild(this.executeButton)
     }
 
@@ -34,6 +26,12 @@ class CodeInput {
 
         this.input.onkeydown = (event) => {
             if (event.keyCode == 13) {
+                const text = this.input.value
+                const l = text.length
+                const ch = text.substring(0, l).charAt(l - 1)
+                if (ch == '{') {
+                    this.input.value += '\n\n}'
+                }
                 this.input.rows = parseInt(this.input.rows) + 1
             }
         }
@@ -62,6 +60,8 @@ class AddButton {
 
     initButton() {
         this.addBtn = document.createElement('button')
+        this.addBtn.innerHTML = "ADD"
+        this.addBtn.className = 'addbtn'
         document.body.appendChild(this.addBtn)
     }
 
@@ -71,9 +71,11 @@ class AddButton {
         }
     }
 
-    static init() {
+    static create() {
         const addBtn = new AddButton()
         addBtn.handleClick()
         return addBtn
     }
 }
+
+AddButton.create()
