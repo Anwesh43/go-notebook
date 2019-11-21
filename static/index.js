@@ -52,3 +52,28 @@ class CodeInput {
         return codeInput
     }
 }
+
+class AddButton {
+
+    constructor() {
+        this.codeInputs = []
+        this.initButton()
+    }
+
+    initButton() {
+        this.addBtn = document.createElement('button')
+        document.body.appendChild(this.addBtn)
+    }
+
+    handleClick() {
+        this.addBtn.onclick = () => {
+            this.codeInputs.push(CodeInput.create())
+        }
+    }
+
+    static init() {
+        const addBtn = new AddButton()
+        addBtn.handleClick()
+        return addBtn
+    }
+}
